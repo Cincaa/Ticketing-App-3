@@ -76,6 +76,7 @@ public class ServiceClass {
         TicketService ticketService = new TicketService();
         ticketService.writeTicketsToFile();
         SeatsService seatsService = new SeatsService();
+        seatsService.saveSeat(s);
         seatsService.writeSeatsToFile();
 
     }
@@ -127,6 +128,7 @@ public class ServiceClass {
         TicketVIPService ticketVIPService = new TicketVIPService();
         ticketVIPService.writeTicketsToFile();
         SeatsService seatsService = new SeatsService();
+        seatsService.saveSeat(s);
         seatsService.writeSeatsToFile();
     }
 
@@ -172,6 +174,7 @@ public class ServiceClass {
         TicketEconomicService ticketEconomicService = new TicketEconomicService();
         ticketEconomicService.writeTicketsToFile();
         SeatsService seatsService = new SeatsService();
+        seatsService.saveSeat(s);
         seatsService.writeSeatsToFile();
     }
 

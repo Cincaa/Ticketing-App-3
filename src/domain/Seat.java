@@ -19,6 +19,14 @@ public class Seat {
         return number;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public void setNumber(Integer number) {
         this.number = number;
     }
