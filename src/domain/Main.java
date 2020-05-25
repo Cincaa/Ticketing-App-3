@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ServiceClass service = new ServiceClass();
+        ServiceMain service = new ServiceMain();
 
         TicketService ticketService = new TicketService();
         ticketService.getInstance();
@@ -17,11 +17,11 @@ public class Main {
         SeatsService seatsService = new SeatsService();
         seatsService.getInstance();
 
-        ticketService.readTicketsFromFile();
+        //ticketService.readTicketsFromFile();
 
-        ticketVIPService.readTicketsFromFile();
-        ticketEconomicService.readTicketsFromFile();
-        seatsService.readSeatsFromFile();
+        //ticketVIPService.readTicketsFromFile();
+        //ticketEconomicService.readTicketsFromFile();
+        //seatsService.readSeatsFromFile();
 
         Integer option = -1;
         while (option != 0) {
@@ -31,47 +31,47 @@ public class Main {
             switch (option) {
                 case 0:
                     option = 0;
-                    ServiceClass.logs("Exit");
+                    ServiceMain.logs("Exit");
                     break;
                 case 1:
                     service.addTicketR();
-                    ServiceClass.logs("Buy a Regular Ticket");
+                    ServiceMain.logs("Buy a Regular Ticket");
                     break;
                 case 2:
                     service.addTicketVIP();
-                    ServiceClass.logs("Buy a VIP Ticket");
+                    ServiceMain.logs("Buy a VIP Ticket");
                     break;
                 case 3:
                     service.addTicketE();
-                    ServiceClass.logs("Buy an Economic Ticket");
+                    ServiceMain.logs("Buy an Economic Ticket");
                     break;
                 case 4:
                     service.availablity();
-                    ServiceClass.logs("Show available seats");
+                    ServiceMain.logs("Check available seats");
                     break;
                 case 5:
                     service.refund();
-                    ServiceClass.logs("Refund");
+                    ServiceMain.logs("Refund");
                     break;
                 case 6:
                     service.eInfo();
-                    ServiceClass.logs("Event info");
+                    ServiceMain.logs("Event info");
                     break;
                 case 7:
                     service.location();
-                    ServiceClass.logs("Event location");
+                    ServiceMain.logs("Event location");
                     break;
                 case 8:
                     service.vip();
-                    ServiceClass.logs("VIP advantages");
+                    ServiceMain.logs("VIP advantages");
                     break;
                 case 9:
                     service.verify();
-                    ServiceClass.logs("Verify my ticket");
+                    ServiceMain.logs("Verify my ticket");
                     break;
                 default:
                     System.out.println("Invalid!");
-                    ServiceClass.logs("Invalid command");
+                    ServiceMain.logs("Invalid command");
             }
 
         }

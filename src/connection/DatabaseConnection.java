@@ -60,5 +60,25 @@ public class DatabaseConnection {
         } catch (FileNotFoundException e) {
             System.out.println("Could not load file: 'seats.sql'!");
         }
+
+        try (Scanner scanner = new Scanner(new File("tickets.sql"))) {
+            scanner.useDelimiter(delimiter);
+            while (scanner.hasNext()) {
+                String rawStatement = scanner.next() + delimiter;
+                if (rawStatement.trim().length() < 2) {
+                    continue;
+                }
+                System.out.println("Executing statement: " + rawStatement);
+
+                try (Statement currentStatement = connection.createStatement()) {
+                    currentStatement.execute(rawStatement);
+                    System.out.println("Successfully executed statement!");
+                } catch (SQLException e) {
+                    System.out.println("Failed to execute statement: " + e.getMessage());
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not load file: 'tickets.sql'!");
+        }
     }
 }

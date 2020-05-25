@@ -16,7 +16,7 @@ public class SeatsService {
     private static SeatsService instance = null;
 
     private static final String INSERT_STATEMENT = "INSERT INTO seats (no, category) VALUES (?,?)";
-    private static final String SELECT_STATEMENT = "SELECT * FROM persons WHERE no = ?";
+    private static final String SELECT_STATEMENT = "SELECT * FROM seats WHERE no = ?";
     private static final String UPDATE_STATEMENT = "UPDATE seats SET category = ? WHERE no = ?";
     private static final String DELETE_STATEMENT = "DELETE FROM seats WHERE no = ?";
 
@@ -34,28 +34,28 @@ public class SeatsService {
                 String[] dataFields = currentLine.split(",");
                 if (dataFields[1].equals("R")) {
                     Seat seat = new Seat(Integer.parseInt(dataFields[0]), dataFields[1]);
-                    ServiceClass.getSeatSet().add(seat);
+                    ServiceMain.getSeatSet().add(seat);
                 }
                 if (dataFields[1].equals("V")) {
                     SeatVIP seat = new SeatVIP(Integer.parseInt(dataFields[0]), dataFields[1], dataFields[2]);
-                    ServiceClass.getSeatSet().add(seat);
+                    ServiceMain.getSeatSet().add(seat);
                 }
                 if (dataFields[1].equals("E")) {
                     SeatEconomic seat = new SeatEconomic(Integer.parseInt(dataFields[0]), dataFields[1], dataFields[2]);
-                    ServiceClass.getSeatSet().add(seat);
+                    ServiceMain.getSeatSet().add(seat);
                 }
             }
         } catch (IOException e) {
             System.out.println("Could not read data from file: " + e.getMessage());
             return;
         }
-        System.out.println("Successfully read " + ServiceClass.getTicketEconomicList().size() + " seats!");
+        System.out.println("Successfully read " + ServiceMain.getTicketEconomicList().size() + " seats!");
 
     }
 
     public void writeSeatsToFile() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./src/Data/Seats.txt"))) {
-            for (Seat seat : ServiceClass.getSeatSet()) {
+            for (Seat seat : ServiceMain.getSeatSet()) {
                 if (seat instanceof SeatEconomic) {
                     bufferedWriter.write(seat.getNumber().toString() + "," + "E" + "," + ((SeatEconomic) seat).getSpecialEntrance());
                     bufferedWriter.newLine();
@@ -81,34 +81,34 @@ public class SeatsService {
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("A new user was inserted successfully!");
+                System.out.println("A new seat was inserted successfully!");
             }
         } catch (SQLException e) {
-            System.out.println("Something went wrong when trying to insert a new user: " + e.getMessage());
+            System.out.println("Something went wrong when trying to insert a new seat: " + e.getMessage());
             return new Seat(seat.getNumber()+1);
         }
         return seat;
     }
 
-    public Seat findSeat(Integer no) {
+    public boolean findSeat(Integer no) {
         Seat seat = new Seat(no);
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(SELECT_STATEMENT)) {
             statement.setInt(1, no);
 
             try (ResultSet result = statement.executeQuery()) {
                 if (!result.next()) {
-                    System.out.println("Something went wrong when trying to find user: User was not found!");
-                    return seat;
+                    System.out.println("Seat available!");
+                    return true;
                 }
 
-                System.out.println("User was found!");
+                System.out.println("Seat was found!");
                 seat.setNumber(result.getInt("no"));
                 seat.setCategory(result.getString("category"));
             }
         } catch (SQLException e) {
             System.out.println("Something went wrong when trying to find user: " + e.getMessage());
         }
-        return seat;
+        return false;
     }
 
     public Seat updateSeat(Seat seat) {
@@ -118,15 +118,15 @@ public class SeatsService {
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("User was updated successfully!");
+                System.out.println("Seat was updated successfully!");
                 return seat;
             }
         } catch (SQLException e) {
-            System.out.println("Something went wrong when trying to update user: " + e.getMessage());
+            System.out.println("Something went wrong when trying to update seat: " + e.getMessage());
             return new Seat(seat.getNumber());
         }
 
-        System.out.println("Something went wrong when trying to update user: User was not found!");
+        System.out.println("Something went wrong when trying to update seat: Seat was not found!");
         return new Seat(seat.getNumber());
     }
 
@@ -136,15 +136,15 @@ public class SeatsService {
 
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
-                System.out.println("User was deleted successfully!");
+                System.out.println("Seat was deleted successfully!");
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("Something went wrong when trying to delete user: " + e.getMessage());
+            System.out.println("Something went wrong when trying to delete seat: " + e.getMessage());
             return false;
         }
 
-        System.out.println("Something went wrong when trying to delete user: User was not found!");
+        System.out.println("Something went wrong when trying to delete seat: Seat was not found!");
         return false;
     }
 }

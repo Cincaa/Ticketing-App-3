@@ -1,4 +1,4 @@
-CREATE TABLE `seats` (
+CREATE TABLE IF NOT EXISTS `seats` (
 	`no` INT NOT NULL,
 	`category` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`no`)

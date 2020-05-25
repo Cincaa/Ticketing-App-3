@@ -21,20 +21,20 @@ public class TicketVIPService {
             while ((currentLine = bufferedReader.readLine()) != null) {
                 String[] dataFields = currentLine.split(",");
                 TicketVIP ticket = new TicketVIP(Integer.parseInt(dataFields[0]), dataFields[1], Integer.parseInt(dataFields[2]));
-                ServiceClass.getTicketVIPList().add(ticket);
+                ServiceMain.getTicketVIPList().add(ticket);
 
             }
         } catch (IOException e) {
             System.out.println("Could not read data from file: " + e.getMessage());
             return;
         }
-        System.out.println("Successfully read " + ServiceClass.getTicketVIPList().size() + " tickets!");
+        System.out.println("Successfully read " + ServiceMain.getTicketVIPList().size() + " tickets!");
 
     }
 
     public void writeTicketsToFile() {
         try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("./src/Data/VIPTickets.txt"))) {
-            for (TicketVIP ticket : ServiceClass.getTicketVIPList()) {
+            for (TicketVIP ticket : ServiceMain.getTicketVIPList()) {
                 bufferedWriter.write(ticket.getTicketNo().toString() + "," + ticket.getName() + ","
                         + ticket.getExtraFee().toString());
                 bufferedWriter.newLine();
@@ -43,7 +43,7 @@ public class TicketVIPService {
             System.out.println("Could not write data to file: " + e.getMessage());
             return;
         }
-        System.out.println("Successfully wrote " + ServiceClass.getTicketVIPList().size() + " tickets!");
+        System.out.println("Successfully wrote " + ServiceMain.getTicketVIPList().size() + " tickets!");
     }
 
 }

@@ -9,13 +9,15 @@ import java.time.Instant;
 import java.util.*;
 
 
-public class ServiceClass {
+
+public class ServiceMain {
+
     private static Set<Seat> seatSet = new HashSet<>();
     private static List<Ticket> ticketList = new ArrayList<>();
     private static List<TicketEconomic> ticketEconomicList = new ArrayList<>();
     private static List<TicketVIP> ticketVIPList = new ArrayList<>();
 
-    public ServiceClass() {
+    public ServiceMain() {
         ticketList = new ArrayList<Ticket>();
         seatSet = new HashSet<Seat>();
     }
@@ -54,31 +56,36 @@ public class ServiceClass {
         System.out.println("Name: ");
         Scanner in = new Scanner(System.in);
         String name = in.nextLine();
+
+        TicketService ticketService = new TicketService();
+        SeatsService seatsService = new SeatsService();
+
         //Allocate a ticket number
-        Integer no = ticketList.size();
+        Integer no = ticketService.countTickets();
         Ticket t = new Ticket(no, name);
+        //ticketList.add(t);
         System.out.println("Your ticket number is: " + no);
-        ticketList.add(t);
+
+
+
         Integer ok = 1;
         Integer seatNo = -1;
         while (ok == 1) {
             ok = 0;
             Random rand = new Random();
             seatNo = rand.nextInt(899) + 100;
-            for (Seat seat : seatSet)
-                if (seat.getNumber().equals(seatNo))
-                    ok = 1;
+
+            if (seatsService.findSeat(seatNo) == false)
+                ok = 1;
         }
         Seat s = new Seat(seatNo, t.toString());
-        seatSet.add(s);
         System.out.println("Seat: " + seatNo);
 
-        TicketService ticketService = new TicketService();
-        ticketService.writeTicketsToFile();
-        SeatsService seatsService = new SeatsService();
         seatsService.saveSeat(s);
-        seatsService.writeSeatsToFile();
 
+
+        //ticketService.writeTicketsToFile();
+        ticketService.saveTicket(t);
     }
 
     public void addTicketVIP() {
@@ -129,7 +136,6 @@ public class ServiceClass {
         ticketVIPService.writeTicketsToFile();
         SeatsService seatsService = new SeatsService();
         seatsService.saveSeat(s);
-        seatsService.writeSeatsToFile();
     }
 
     public void addTicketE() {
@@ -140,6 +146,9 @@ public class ServiceClass {
         System.out.println("Enter promo code: ");
         String promoCode = in.nextLine();
 
+        SeatsService seatsService = new SeatsService();
+        TicketEconomicService ticketEconomicService = new TicketEconomicService();
+
         TicketEconomic t;
         Integer ok = 1;
         Integer seatNo = -1;
@@ -147,16 +156,15 @@ public class ServiceClass {
             ok = 0;
             Random rand = new Random();
             seatNo = rand.nextInt(899) + 100;
-            for (Seat seat : seatSet)
-                if (seat.getNumber() == seatNo)
-                    ok = 1;
+            if (seatsService.findSeat(seatNo) == false)
+                ok = 1;
         }
 
         if (promoCode.equals("PROMO")) {
             System.out.println("OK");
-            Integer no = ticketEconomicList.size();
-            t = new TicketEconomic(no, name, promoCode, 10);
-            ticketEconomicList.add(t);
+            Integer no = ticketEconomicService.countTickets();
+            t = new TicketEconomic(no, name, 10, promoCode);
+            //ticketEconomicList.add(t);
             System.out.println("Your ticket number is: " + no);
             System.out.println("Discount: " + 10 + "%");
 
@@ -167,31 +175,23 @@ public class ServiceClass {
 
 
         SeatEconomic s = new SeatEconomic(seatNo, t.toString(), "B2");
-        seatSet.add(s);
+        //seatSet.add(s);
         System.out.println("Seat: " + seatNo);
         System.out.println("Entrance: " + "B2");
 
-        TicketEconomicService ticketEconomicService = new TicketEconomicService();
-        ticketEconomicService.writeTicketsToFile();
-        SeatsService seatsService = new SeatsService();
+
+        //ticketEconomicService.writeTicketsToFile();
+        ticketEconomicService.saveTicket(t);
+
         seatsService.saveSeat(s);
-        seatsService.writeSeatsToFile();
     }
 
     public void availablity() {
-        System.out.println("Seat Availability: ");
-        for (int i = 100; i <= 999; i++) {
-            Integer ok = 0;
-            for (Seat seat : seatSet)
-                if (seat.getNumber() == i)
-                    ok = 1;
-            if (ok == 0)
-                System.out.print(i + " ");
-            else
-                System.out.print("    ");
-            if (i % 100 == 0)
-                System.out.println();
-        }
+        System.out.println("Seat Availability(type seat no): ");
+        Scanner in = new Scanner(System.in);
+        Integer seatNo = in.nextInt();
+        SeatsService seatsService = new SeatsService();
+        seatsService.findSeat(seatNo);
     }
 
     public void refund() {

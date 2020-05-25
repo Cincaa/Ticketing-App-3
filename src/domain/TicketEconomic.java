@@ -4,7 +4,7 @@ public class TicketEconomic extends Ticket {
     public String promoCode;
     public Integer discount;
 
-    public TicketEconomic(Integer ticketNo, String name, String promoCode, Integer discount) {
+    public TicketEconomic(Integer ticketNo, String name, Integer discount, String promoCode) {
         super(ticketNo, name);
         this.promoCode = promoCode;
         this.discount = discount;
