@@ -73,7 +73,7 @@ public class ServiceMain {
             Random rand = new Random();
             seatNo = rand.nextInt(899) + 100;
 
-            if (seatsService.findSeat(seatNo) == false)
+            if (!seatsService.findSeat(seatNo))
                 ok = 1;
         }
         Seat s = new Seat(seatNo, t.toString());
@@ -120,7 +120,7 @@ public class ServiceMain {
                 System.out.println("Seat doesn't exist. Try another number.");
             }
 
-            if (seatsService.findSeat(seatNo) == false) {
+            if (!seatsService.findSeat(seatNo)) {
                 ok = 1;
                 System.out.println("Seat already taken. Try another number.");
             }
@@ -158,7 +158,7 @@ public class ServiceMain {
             ok = 0;
             Random rand = new Random();
             seatNo = rand.nextInt(899) + 100;
-            if (seatsService.findSeat(seatNo))
+            if (!seatsService.findSeat(seatNo))
                 ok = 1;
         }
 
@@ -184,7 +184,6 @@ public class ServiceMain {
 
 
         //ticketEconomicService.writeTicketsToFile();
-        ticketEconomicService.saveTicket(t);
 
         seatsService.saveSeat(s);
     }
@@ -333,7 +332,7 @@ public class ServiceMain {
         System.out.println("1.Buy a Regular Ticket.");
         System.out.println("2.Buy a VIP Ticket.");
         System.out.println("3.Buy an Economic Ticket.");
-        System.out.println("4.Show available seats.");
+        System.out.println("4.Check seats availability.");
         System.out.println("5.Refund.");
         System.out.println("6.Change name.");
         System.out.println("7.Event info.");

@@ -10,3 +10,12 @@ Change Name,2020-05-25T12:57:50.605Z
 Change Name,2020-05-25T13:02:39.117Z
 Change Name,2020-05-25T13:03:54.493Z
 Verify my ticket,2020-05-25T13:28:48.136Z
+Check available seats,2020-05-25T14:24:04.978Z
+Buy an Economic Ticket,2020-05-25T14:25:17.492Z
+Buy a Regular Ticket,2020-05-25T14:26:18.395Z
+Buy an Economic Ticket,2020-05-25T14:26:28.068Z
+Buy an Economic Ticket,2020-05-25T14:33:54.465Z
+Buy a VIP Ticket,2020-05-25T14:34:29.203Z
+Buy a Regular Ticket,2020-05-25T14:34:37.451Z
+Buy an Economic Ticket,2020-05-25T14:34:51.192Z
+Refund,2020-05-25T14:36:37.210Z
