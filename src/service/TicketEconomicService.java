@@ -2,7 +2,6 @@ package service;
 
 
 import connection.DatabaseConnection;
-import domain.Ticket;
 import domain.TicketEconomic;
 
 import java.io.*;
@@ -11,13 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TicketEconomicService {
-    private static TicketEconomicService instance = null;
-
     private static final String INSERT_STATEMENT = "INSERT INTO tickets (ticketNo, name, discount, promoCode, extraFee) VALUES (?,?,?,?,?)";
     private static final String SELECT_STATEMENT = "SELECT * FROM tickets WHERE ticketNo = ?";
     private static final String UPDATE_STATEMENT = "UPDATE tickets SET name = ? WHERE ticketNo = ?";
     private static final String DELETE_STATEMENT = "DELETE FROM tickets WHERE ticketNo = ?";
-    private static final String COUNT_STATEMENT =  "SELECT COUNT(*) FROM tickets";
+    private static final String COUNT_STATEMENT = "SELECT COUNT(*) FROM tickets";
+    private static TicketEconomicService instance = null;
 
     public TicketEconomicService getInstance() {
         if (instance == null)
@@ -56,6 +54,7 @@ public class TicketEconomicService {
             return;
         }
     }
+
     public TicketEconomic saveTicket(TicketEconomic ticket) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(INSERT_STATEMENT)) {
             statement.setInt(1, ticket.getTicketNo());
@@ -75,7 +74,7 @@ public class TicketEconomicService {
         return ticket;
     }
 
-    public TicketEconomic findTicket (Integer ticketNo) {
+    public Boolean findTicket(Integer ticketNo) {
         TicketEconomic ticket = new TicketEconomic(ticketNo, null, 0, null);
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(SELECT_STATEMENT)) {
             statement.setInt(1, ticketNo);
@@ -83,23 +82,23 @@ public class TicketEconomicService {
             try (ResultSet result = statement.executeQuery()) {
                 if (!result.next()) {
                     System.out.println("Something went wrong when trying to find a regular ticket: TicketEconomic was not found!");
-                    return ticket;
+                    return false;
                 }
 
                 System.out.println("TicketEconomic was found!");
-                ticket.setTicketNo(result.getInt("no"));
-                ticket.setName(result.getString("name"));
+                return true;
             }
         } catch (SQLException e) {
             System.out.println("Something went wrong when trying to find ticket: " + e.getMessage());
         }
-        return ticket;
+        return false;
     }
 
-    public TicketEconomic updateTicket (TicketEconomic ticket) {
+    public TicketEconomic updateTicket(TicketEconomic ticket) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(UPDATE_STATEMENT)) {
-            statement.setInt(1, ticket.getTicketNo());
-            statement.setString(2, ticket.getName());
+            statement.setString(1, ticket.getName());
+            statement.setInt(2, ticket.getTicketNo());
+
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
@@ -132,7 +131,8 @@ public class TicketEconomicService {
         System.out.println("Something went wrong when trying to delete ticket: TicketEconomic was not found!");
         return false;
     }
-    public Integer countTickets(){
+
+    public Integer countTickets() {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(COUNT_STATEMENT)) {
             try (ResultSet result = statement.executeQuery()) {
                 if (!result.next()) {

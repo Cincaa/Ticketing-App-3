@@ -35,10 +35,6 @@ public class DatabaseConnection {
         return instance;
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
     private static void createTables(Connection connection) {
         String delimiter = ";";
         try (Scanner scanner = new Scanner(new File("seats.sql"))) {
@@ -80,5 +76,9 @@ public class DatabaseConnection {
         } catch (FileNotFoundException e) {
             System.out.println("Could not load file: 'tickets.sql'!");
         }
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }

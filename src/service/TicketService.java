@@ -10,13 +10,12 @@ import java.sql.SQLException;
 
 
 public class TicketService {
-    private static TicketService instance = null;
-
     private static final String INSERT_STATEMENT = "INSERT INTO tickets (ticketNo, name, discount, promoCode, extraFee) VALUES (?,?,?,?,?)";
     private static final String SELECT_STATEMENT = "SELECT * FROM tickets WHERE ticketNo = ?";
     private static final String UPDATE_STATEMENT = "UPDATE tickets SET name = ? WHERE ticketNo = ?";
     private static final String DELETE_STATEMENT = "DELETE FROM tickets WHERE ticketNo = ?";
-    private static final String COUNT_STATEMENT =  "SELECT COUNT(*) FROM tickets";
+    private static final String COUNT_STATEMENT = "SELECT COUNT(*) FROM tickets";
+    private static TicketService instance = null;
 
     public TicketService getInstance() {
         if (instance == null)
@@ -53,6 +52,7 @@ public class TicketService {
             return;
         }
     }
+
     public Ticket saveTicket(Ticket ticket) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(INSERT_STATEMENT)) {
             statement.setInt(1, ticket.getTicketNo());
@@ -72,7 +72,7 @@ public class TicketService {
         return ticket;
     }
 
-    public Ticket findTicket (Integer ticketNo) {
+    public Boolean findTicket(Integer ticketNo) {
         Ticket ticket = new Ticket(ticketNo, null);
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(SELECT_STATEMENT)) {
             statement.setInt(1, ticketNo);
@@ -80,23 +80,23 @@ public class TicketService {
             try (ResultSet result = statement.executeQuery()) {
                 if (!result.next()) {
                     System.out.println("Something went wrong when trying to find a regular ticket: Ticket was not found!");
-                    return ticket;
+                    return false;
                 }
 
                 System.out.println("Ticket was found!");
-                ticket.setTicketNo(result.getInt("no"));
-                ticket.setName(result.getString("name"));
+                return true;
             }
         } catch (SQLException e) {
             System.out.println("Something went wrong when trying to find ticket: " + e.getMessage());
         }
-        return ticket;
+        return false;
     }
 
-    public Ticket updateTicket (Ticket ticket) {
+    public Ticket updateTicket(Ticket ticket) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(UPDATE_STATEMENT)) {
-            statement.setInt(1, ticket.getTicketNo());
-            statement.setString(2, ticket.getName());
+            statement.setString(1, ticket.getName());
+            statement.setInt(2, ticket.getTicketNo());
+
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
@@ -112,7 +112,7 @@ public class TicketService {
         return new Ticket(ticket.getTicketNo(), ticket.getName());
     }
 
-    public boolean deleteTicket(Integer ticketNo) {
+    public Boolean deleteTicket(Integer ticketNo) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(DELETE_STATEMENT)) {
             statement.setInt(1, ticketNo);
 
@@ -129,7 +129,8 @@ public class TicketService {
         System.out.println("Something went wrong when trying to delete ticket: Ticket was not found!");
         return false;
     }
-    public Integer countTickets(){
+
+    public Integer countTickets() {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(COUNT_STATEMENT)) {
             try (ResultSet result = statement.executeQuery()) {
                 if (!result.next()) {
@@ -137,12 +138,12 @@ public class TicketService {
                     return -1;
                 }
                 System.out.println("Count executed");
-               return result.getInt("COUNT(*)");
+                return result.getInt("COUNT(*)");
             }
         } catch (SQLException e) {
             System.out.println("Something went wrong when trying to find count from ticket: " + e.getMessage());
         }
         return -1;
-        }
+    }
 }
 

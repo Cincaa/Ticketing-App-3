@@ -54,18 +54,22 @@ public class Main {
                     ServiceMain.logs("Refund");
                     break;
                 case 6:
+                    service.changeName();
+                    ServiceMain.logs("Change Name");
+                    break;
+                case 7:
                     service.eInfo();
                     ServiceMain.logs("Event info");
                     break;
-                case 7:
+                case 8:
                     service.location();
                     ServiceMain.logs("Event location");
                     break;
-                case 8:
+                case 9:
                     service.vip();
                     ServiceMain.logs("VIP advantages");
                     break;
-                case 9:
+                case 10:
                     service.verify();
                     ServiceMain.logs("Verify my ticket");
                     break;

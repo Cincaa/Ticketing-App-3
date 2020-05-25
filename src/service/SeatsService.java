@@ -13,12 +13,11 @@ import java.sql.SQLException;
 
 
 public class SeatsService {
-    private static SeatsService instance = null;
-
     private static final String INSERT_STATEMENT = "INSERT INTO seats (no, category) VALUES (?,?)";
     private static final String SELECT_STATEMENT = "SELECT * FROM seats WHERE no = ?";
     private static final String UPDATE_STATEMENT = "UPDATE seats SET category = ? WHERE no = ?";
     private static final String DELETE_STATEMENT = "DELETE FROM seats WHERE no = ?";
+    private static SeatsService instance = null;
 
     public SeatsService getInstance() {
         if (instance == null)
@@ -74,6 +73,7 @@ public class SeatsService {
             return;
         }
     }
+
     public Seat saveSeat(Seat seat) {
         try (PreparedStatement statement = DatabaseConnection.getInstance().getConnection().prepareStatement(INSERT_STATEMENT)) {
             statement.setInt(1, seat.getNumber());
@@ -85,7 +85,7 @@ public class SeatsService {
             }
         } catch (SQLException e) {
             System.out.println("Something went wrong when trying to insert a new seat: " + e.getMessage());
-            return new Seat(seat.getNumber()+1);
+            return new Seat(seat.getNumber() + 1);
         }
         return seat;
     }

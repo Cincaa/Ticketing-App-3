@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.util.*;
 
 
-
 public class ServiceMain {
 
     private static Set<Seat> seatSet = new HashSet<>();
@@ -67,7 +66,6 @@ public class ServiceMain {
         System.out.println("Your ticket number is: " + no);
 
 
-
         Integer ok = 1;
         Integer seatNo = -1;
         while (ok == 1) {
@@ -93,23 +91,28 @@ public class ServiceMain {
         Scanner in = new Scanner(System.in);
         String name = in.nextLine();
 
-        Integer no = ticketVIPList.size();
+        SeatsService seatsService = new SeatsService();
+        TicketVIPService ticketVIPService = new TicketVIPService();
+
+        Integer no = ticketVIPService.countTickets();
         TicketVIP t = new TicketVIP(no, name, 50);
         System.out.println("Your ticket number is: " + no);
         System.out.println("VIP fee: " + 50);
-        ticketVIPList.add(t);
+        //ticketVIPList.add(t);
 
         Integer ok = 1;
         Integer seatNo = -1;
         System.out.println("Seat number? (interval range: 100-999) ");
 
         while (ok == 1) {
+            /*
             Collections.sort(ticketVIPList, new Comparator<Ticket>() {
 
                 public int compare(Ticket o1, Ticket o2) {
                     return o1.getTicketNo().compareTo(o2.getTicketNo());
                 }
             });
+            */
             seatNo = in.nextInt();
             ok = 0;
             if (seatNo < 100 || seatNo > 999) {
@@ -117,24 +120,23 @@ public class ServiceMain {
                 System.out.println("Seat doesn't exist. Try another number.");
             }
 
-            for (Seat seat : seatSet)
-                if (seat.getNumber().equals(seatNo)) {
-                    ok = 1;
-                    System.out.println("Seat already taken. Try another number.");
-                }
+            if (seatsService.findSeat(seatNo) == false) {
+                ok = 1;
+                System.out.println("Seat already taken. Try another number.");
+            }
         }
 
         System.out.println("What drink would you like?");
         String drink = in.next();
 
         Seat s = new SeatVIP(seatNo, t.toString(), drink);
-        seatSet.add(s);
+        //seatSet.add(s);
         System.out.println("Seat: " + seatNo);
         System.out.println("Drink: " + drink);
 
-        TicketVIPService ticketVIPService = new TicketVIPService();
-        ticketVIPService.writeTicketsToFile();
-        SeatsService seatsService = new SeatsService();
+
+        //ticketVIPService.writeTicketsToFile();
+        ticketVIPService.saveTicket(t);
         seatsService.saveSeat(s);
     }
 
@@ -156,7 +158,7 @@ public class ServiceMain {
             ok = 0;
             Random rand = new Random();
             seatNo = rand.nextInt(899) + 100;
-            if (seatsService.findSeat(seatNo) == false)
+            if (seatsService.findSeat(seatNo))
                 ok = 1;
         }
 
@@ -165,6 +167,7 @@ public class ServiceMain {
             Integer no = ticketEconomicService.countTickets();
             t = new TicketEconomic(no, name, 10, promoCode);
             //ticketEconomicList.add(t);
+            ticketEconomicService.saveTicket(t);
             System.out.println("Your ticket number is: " + no);
             System.out.println("Discount: " + 10 + "%");
 
@@ -198,35 +201,81 @@ public class ServiceMain {
         System.out.println("Enter ticket number ");
         Scanner in = new Scanner(System.in);
         Integer no = in.nextInt();
+        TicketService ticketService = new TicketService();
+        TicketVIPService ticketVIPService = new TicketVIPService();
+        TicketEconomicService ticketEconomicService = new TicketEconomicService();
 
         System.out.println("Type category(R - regular; V - VIP;E - Economic): ");
         String category = in.next();
         //Check regular tickets
         if (category.equals("R"))
-            for (Ticket t : ticketList)
-                if (t.getTicketNo().equals(no)) {
-                    ticketList.remove(t);
-                    System.out.println("Ticket number " + no + " deleted");
-                } else
-                    System.out.println("Ticket number not found");
+            if (ticketService.findTicket(no)) {
+                ticketService.deleteTicket(no);
+                System.out.println("Ticket number " + no + " deleted");
+            } else {
+                System.out.println("Ticket number not found");
+            }
         //Check VIP tickets
         if (category.equals("V"))
-            for (TicketVIP t : ticketVIPList)
-                if (t.getTicketNo().equals(no)) {
-                    ticketList.remove(t);
-                    System.out.println("Ticket number " + no + " deleted");
-                } else
-                    System.out.println("Ticket number not found");
+            if (ticketVIPService.findTicket(no)) {
+                ticketVIPService.deleteTicket(no);
+                System.out.println("Ticket number " + no + " deleted");
+            } else {
+                System.out.println("Ticket number not found");
+            }
         //Check economic tickets
         if (category.equals("E"))
-            for (TicketEconomic t : ticketEconomicList)
-                if (t.getTicketNo().equals(no)) {
-                    ticketList.remove(t);
-                    System.out.println("Ticket number " + no + " deleted");
-                } else
-                    System.out.println("Ticket number not found");
+            if (ticketEconomicService.findTicket(no)) {
+                ticketEconomicService.deleteTicket(no);
+                System.out.println("Ticket number " + no + " deleted");
+            } else {
+                System.out.println("Ticket number not found");
+            }
     }
+    public void changeName() {
+        System.out.println("Enter ticket number ");
+        Scanner in = new Scanner(System.in);
+        Integer no = in.nextInt();
+        TicketService ticketService = new TicketService();
+        TicketVIPService ticketVIPService = new TicketVIPService();
+        TicketEconomicService ticketEconomicService = new TicketEconomicService();
 
+        System.out.println("New name: ");
+        String name = in.next();
+
+        System.out.println("Type category(R - regular; V - VIP;E - Economic): ");
+        String category = in.next();
+
+
+
+        //Check regular tickets
+        if (category.equals("R"))
+            if (ticketService.findTicket(no)) {
+                Ticket t = new Ticket(no, name);
+                ticketService.updateTicket(t);
+                System.out.println("Ticket number " + no + " updated");
+            } else {
+                System.out.println("Ticket number not found");
+            }
+        //Check VIP tickets
+        if (category.equals("V"))
+            if (ticketVIPService.findTicket(no)) {
+                TicketVIP t = new TicketVIP(no, name,50);
+                ticketService.updateTicket(t);
+                System.out.println("Ticket number " + no + " updated");
+            } else {
+                System.out.println("Ticket number not found");
+            }
+        //Check economic tickets
+        if (category.equals("E"))
+            if (ticketEconomicService.findTicket(no)) {
+                TicketEconomic t = new TicketEconomic(no, name, 10,"PROMO");
+                ticketService.updateTicket(t);
+                System.out.println("Ticket number " + no + " updated");
+            } else {
+                System.out.println("Ticket number not found");
+            }
+    }
     public void eInfo() {
         Eveniment e = new Eveniment("Concert", 20, 300);
         System.out.println("Name: " + e.getName());
@@ -251,26 +300,24 @@ public class ServiceMain {
         Scanner in = new Scanner(System.in);
         Integer no = in.nextInt();
         Boolean ok = false;
+        TicketService ticketService = new TicketService();
+        TicketEconomicService ticketEconomicService = new TicketEconomicService();
+        TicketVIPService ticketVIPService = new TicketVIPService();
 
         System.out.println("Type category(R - regular; V - VIP;E - Economic): ");
         String category = in.next();
         if (category.equals("R"))
-            for (Ticket t : ticketList)
-                if (t.getTicketNo().equals(no)) {
-                    ok = true;
-                    break;
-                }
+            if (ticketService.findTicket(no)) {
+                ok = true;
+            }
+
         if (category.equals("V"))
-            for (TicketVIP t : ticketVIPList)
-                if (t.getTicketNo().equals(no)) {
+            if (ticketVIPService.findTicket(no)) {
                     ok = true;
-                    break;
                 }
         if (category.equals("E"))
-            for (TicketEconomic t : ticketEconomicList)
-                if (t.getTicketNo() == no) {
+            if (ticketEconomicService.findTicket(no)) {
                     ok = true;
-                    break;
                 }
         if (ok)
             System.out.println("Ticket number " + no + " is genuine");
@@ -288,9 +335,10 @@ public class ServiceMain {
         System.out.println("3.Buy an Economic Ticket.");
         System.out.println("4.Show available seats.");
         System.out.println("5.Refund.");
-        System.out.println("6.Event info.");
-        System.out.println("7.Event location.");
-        System.out.println("8.VIP advantages.");
-        System.out.println("9.Verify my ticket (ticket no. & category requiered).");
+        System.out.println("6.Change name.");
+        System.out.println("7.Event info.");
+        System.out.println("8.Event location.");
+        System.out.println("9.VIP advantages.");
+        System.out.println("10.Verify my ticket (ticket no. & category requiered).");
     }
 }
