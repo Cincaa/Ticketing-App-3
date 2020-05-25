@@ -261,7 +261,7 @@ public class ServiceMain {
         if (category.equals("V"))
             if (ticketVIPService.findTicket(no)) {
                 TicketVIP t = new TicketVIP(no, name,50);
-                ticketService.updateTicket(t);
+                ticketVIPService.updateTicket(t);
                 System.out.println("Ticket number " + no + " updated");
             } else {
                 System.out.println("Ticket number not found");
@@ -270,7 +270,7 @@ public class ServiceMain {
         if (category.equals("E"))
             if (ticketEconomicService.findTicket(no)) {
                 TicketEconomic t = new TicketEconomic(no, name, 10,"PROMO");
-                ticketService.updateTicket(t);
+                ticketEconomicService.updateTicket(t);
                 System.out.println("Ticket number " + no + " updated");
             } else {
                 System.out.println("Ticket number not found");
